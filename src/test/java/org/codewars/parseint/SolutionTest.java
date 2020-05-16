@@ -7,10 +7,19 @@ import static org.junit.Assert.assertEquals;
 public class SolutionTest {
     
     @Test
-    public void acceptanceTests() {
+    public void acceptanceTests1() {
         assertEquals(1 , Parser.parseInt("one"));
+    }
+    @Test
+    public void acceptanceTests20() {
         assertEquals(20 , Parser.parseInt("twenty"));
+    }
+    @Test
+    public void acceptanceTests246() {
         assertEquals(246 , Parser.parseInt("two hundred forty-six"));
+    }
+    @Test
+    public void acceptanceTests783919() {
         assertEquals(783919, Parser.parseInt("seven hundred eighty-three thousand nine hundred and nineteen"));
     }
 
@@ -46,7 +55,7 @@ public class SolutionTest {
     public void tens() {
         assertEquals(20, Parser.parseInt("twenty"));
         assertEquals(30, Parser.parseInt("thirty"));
-        assertEquals(40, Parser.parseInt("fourty"));
+        assertEquals(40, Parser.parseInt("forty"));
         assertEquals(50, Parser.parseInt("fifty"));
         assertEquals(60, Parser.parseInt("sixty"));
         assertEquals(70, Parser.parseInt("seventy"));
@@ -58,7 +67,7 @@ public class SolutionTest {
     public void hyphenatedBelowOneHundred() {
         assertEquals(21, Parser.parseInt("twenty-one"));
         assertEquals(32, Parser.parseInt("thirty-two"));
-        assertEquals(43, Parser.parseInt("fourty-three"));
+        assertEquals(43, Parser.parseInt("forty-three"));
         assertEquals(54, Parser.parseInt("fifty-four"));
         assertEquals(65, Parser.parseInt("sixty-five"));
         assertEquals(76, Parser.parseInt("seventy-six"));
