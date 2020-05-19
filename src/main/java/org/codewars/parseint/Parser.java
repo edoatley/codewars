@@ -1,6 +1,5 @@
 package org.codewars.parseint;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,44 +39,45 @@ public class Parser {
         put("ninety", 90);
         put("hundred", 100);
         put("thousand", 1000);
+        put("million", 1000000);
     }};
 
-    static String HUNDRED = "hundred";
-    static String THOUSAND = "thousand";
     static String ADDITIVE_DIVIDER = "-";
-    static String IGNORABLE_TOKEN = " and";
+    static String IGNORABLE_TOKEN = "and";
 
     public static int parseInt(final String input) {
-        // remove ands
-        String converted = input.replace(IGNORABLE_TOKEN, "");
-        List<String> tokens = Arrays.asList(input.split(" "));
-        for (String t: tokens) {
-            if(wordToNumber.containsKey(t)) {
-                converted = converted.replace(t, String.valueOf(wordToNumber.get(t)));
-            }
-            else if(t.contains(ADDITIVE_DIVIDER)) {
-                String[] splitValue = t.split(ADDITIVE_DIVIDER);
-                converted = converted.replace(t, String.valueOf(wordToNumber.get(splitValue[0]) + wordToNumber.get(splitValue[1])));
-            }
-        }
-        List<Integer> numbersToAdd = Stream.of(converted.split(" ")).map(Integer::valueOf).collect(Collectors.toList());
+        List<Integer> numbersToAdd = Stream.of(input.split(" "))
+                .filter(t-> !t.equals(IGNORABLE_TOKEN))
+                .map(Parser::convertTokenToInteger)
+                .collect(Collectors.toList());
+
         int total = 0;
-        int prev = -1;
-        for (int i = 0; i < numbersToAdd.size(); i++) {
-            int thisNum = numbersToAdd.get(i);
-            if(prev == -1) {
-                prev = thisNum;
-                total = thisNum;
+        int accumulator = 0;
+        for (int thisNum : numbersToAdd) {
+            if (thisNum == 100) {
+                accumulator *= thisNum;
             }
-            else if(thisNum == 100 || thisNum == 1000) {
-                total -= prev;
-                total += thisNum * prev;
+            else if(thisNum == 1000 || thisNum == 1000000) {
+                accumulator *= thisNum;
+                total += accumulator;
+                accumulator = 0;
             }
             else {
-                total += thisNum;
+                accumulator += thisNum;
             }
-            prev = thisNum;
         }
+        total += accumulator;
         return total;
+    }
+
+    private static Integer convertTokenToInteger(String t) {
+        if(wordToNumber.containsKey(t)) {
+            return wordToNumber.get(t);
+        }
+        else if(t.contains(ADDITIVE_DIVIDER)) {
+            String[] splitValue = t.split(ADDITIVE_DIVIDER);
+            return wordToNumber.get(splitValue[0]) + wordToNumber.get(splitValue[1]);
+        }
+        return 0;
     }
 }

@@ -24,6 +24,11 @@ public class SolutionTest {
     }
 
     @Test
+    public void oneMillion() {
+        assertEquals(1000000, Parser.parseInt("one million"));
+    }
+
+    @Test
     public void basicZeroToTen() {
         assertEquals(0, Parser.parseInt("zero"));
         assertEquals(1, Parser.parseInt("one"));
