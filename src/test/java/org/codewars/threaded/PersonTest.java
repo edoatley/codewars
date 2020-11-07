@@ -1,9 +1,11 @@
 package org.codewars.threaded;
 
+import org.junit.jupiter.api.Test;
+
 import java.util.*;
 import java.util.stream.*;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class PersonTest {
@@ -17,8 +19,7 @@ public class PersonTest {
                 .collect(Collectors.toSet());
         Set<Integer> actual = new HashSet<>(counter.getNumbers());
 
-        assertEquals("The expected numbers were not generated",
-                expected, actual);
+        assertEquals(expected, actual, "The expected numbers were not generated");
     }
 
     @Test
@@ -31,8 +32,7 @@ public class PersonTest {
                 .collect(Collectors.toList());
         List<Integer> actual = counter.getNumbers();
 
-        assertEquals("The expected numbers were not generated in the right sequence",
-                expected, actual);
+        assertEquals(expected, actual, "The expected numbers were not generated in the right sequence");
     }
 
     @Test
@@ -40,8 +40,7 @@ public class PersonTest {
         Counter counter = new Counter();
         ThreadedCounter.countInThreads(counter);
 
-        assertEquals("The numbers are written in three different threads",
-                3, counter.getThreadIds().size());
+        assertEquals(3, counter.getThreadIds().size(), "The numbers are written in three different threads");
     }
 
     @Test
@@ -62,11 +61,8 @@ public class PersonTest {
                 .boxed()
                 .collect(Collectors.toList());
 
-        assertEquals("Correct thread for 1, 4, 7...",
-                expected1, counter.getNumbersInSameThreadAs(1));
-        assertEquals("Correct thread for 2, 5, 8...",
-                expected2, counter.getNumbersInSameThreadAs(2));
-        assertEquals("Correct thread for 3, 6, 9...",
-                expected3, counter.getNumbersInSameThreadAs(3));
+        assertEquals(expected1, counter.getNumbersInSameThreadAs(1), "Correct thread for 1, 4, 7...");
+        assertEquals(expected2, counter.getNumbersInSameThreadAs(2), "Correct thread for 2, 5, 8...");
+        assertEquals(expected3, counter.getNumbersInSameThreadAs(3), "Correct thread for 3, 6, 9...");
     }
 }

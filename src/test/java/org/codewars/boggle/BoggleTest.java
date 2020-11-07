@@ -1,10 +1,11 @@
 package org.codewars.boggle;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class BoggleTest {
@@ -39,7 +40,7 @@ public class BoggleTest {
     @Test
     public void sampleTests2() {
         for (int i = 0; i < toCheck2.length; i++) {
-            assertEquals(String.format("Failed to answer correctly for %s", toCheck2[i]), expecteds2[i], new Boggle(deepCopy(board2), toCheck2[i]).check());
+            assertEquals(expecteds2[i], new Boggle(deepCopy(board2), toCheck2[i]).check());
         }
     }
 

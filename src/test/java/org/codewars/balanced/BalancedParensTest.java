@@ -1,13 +1,13 @@
 package org.codewars.balanced;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BalancedParensTest {
 
@@ -15,7 +15,7 @@ public class BalancedParensTest {
     public void testZero() {
         List<String> actual = BalancedParens.balancedParens(0);
         Collections.sort(actual);
-        assertEquals(new ArrayList<>(Arrays.asList("")), actual);
+        assertEquals(new ArrayList<>(Collections.singletonList("")), actual);
     }
 
     @Test
