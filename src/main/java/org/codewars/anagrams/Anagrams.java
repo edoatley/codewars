@@ -1,16 +1,15 @@
 package org.codewars.anagrams;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
-import static java.math.BigInteger.*;
-import static java.util.stream.Collectors.*;
+import static java.math.BigInteger.ONE;
+import static java.math.BigInteger.ZERO;
+import static java.util.stream.Collectors.toList;
 
 //Consider a "word" as any sequence of capital letters A-Z (not limited to just "dictionary words").
 // For any word with at least two different letters, there are other words composed of the same letters
@@ -47,36 +46,46 @@ public class Anagrams {
         int n = word.length();
         List<Character> charactersRemaining = word.chars().mapToObj(c -> (char)c).collect(toList());
         StringBuilder sb = new StringBuilder();
-        BigInteger position = ZERO;
+        BigInteger betterPositionsSkippedSum = ZERO;
         for (int i = 0; i < n; i++) {
             Character c = word.charAt(i);
             charactersRemaining.remove(c);
             sb.append(c);
-            System.err.printf("c = %s, sb = %s, rem = %s%n", c, sb, charactersRemaining);
-            position = position.add(skippedCombinations(c, charactersRemaining));
-            System.err.printf("position = %s%n", position);
+//            System.err.printf("c = %s, sb = %s, charsRemain = %s%n", c, sb, charactersRemaining);
+
+            List<Character> betterCharacters = charactersRemaining.stream().filter(x -> x < c).distinct().collect(toList());
+            for (Character betterCharacter : betterCharacters){
+                List<Character> missedComboChars = swapChars(c, betterCharacter, charactersRemaining);
+                BigInteger skippedCombinations = combinations(missedComboChars);
+                betterPositionsSkippedSum = betterPositionsSkippedSum.add(skippedCombinations);
+            }
+//            System.err.printf("betterPositionsSkippedSum = %s%n", betterPositionsSkippedSum);
         }
-        if(position.compareTo(ZERO) > 0){
-            position = position.add(ONE);
-        }
-        return position.max(ONE);
+
+        return betterPositionsSkippedSum.add(ONE);
     }
 
-    private BigInteger skippedCombinations(Character c, List<Character> charactersRemaining){
-        BigInteger lowerOptionsRemaining = valueOf(charactersRemaining.stream().filter(x -> x < c).count());
-        BigInteger combinations = combinations(charactersRemaining.stream().map(String::valueOf).collect(joining("")));
-        System.err.printf("lowerOptions = %s, combinations = %s%n", lowerOptionsRemaining, combinations);
-        if(!lowerOptionsRemaining.equals(ZERO)){
-            return combinations.multiply(lowerOptionsRemaining);
+    private List<Character> swapChars(Character c, Character betterCharacter, List<Character> charactersRemaining) {
+        List<Character> result = new ArrayList<Character>();
+        boolean alreadyExcluded = false;
+        result.add(c);
+        for(Character rem : charactersRemaining)  {
+            if (!rem.equals(betterCharacter) || alreadyExcluded) {
+                result.add(rem);
+            }
+            else {
+                alreadyExcluded = true;
+            }
         }
-        return ZERO;
+//        System.err.printf("swapChars --> c = %s, betterCharacter = %s, result %s%n", c, betterCharacter, result);
+        return result;
     }
 
-    private BigInteger combinations(String word) {
-        int n = word.length();
+    private BigInteger combinations(List<Character> characters) {
+        int n = characters.size();
         Map<Character, Integer> multiOccurrences = new ConcurrentHashMap<>();
 
-        word.chars().mapToObj(c -> (char) c).forEach(c -> {
+        characters.forEach(c -> {
             multiOccurrences.compute(c, (key, val) -> (val == null) ? 1 : val + 1);
         });
         multiOccurrences.forEach((key, val) -> {
@@ -85,10 +94,12 @@ public class Anagrams {
             }
         });
         BigInteger result = factorial(n);
+//        System.err.printf("totalCombos = %s ", result.intValue());
         for (Map.Entry<Character, Integer> duplicate : multiOccurrences.entrySet()) {
             result = result.divide(factorial(duplicate.getValue()));
+//            System.err.printf("combos after adjusting for %s x%s = %s ", duplicate.getKey(), duplicate.getValue(), result.intValue());
         }
-
+//        System.err.printf("combinations = %s%n", result.intValue());
         return result;
     }
 
@@ -98,49 +109,4 @@ public class Anagrams {
                 .reduce(BigInteger::multiply)
                 .orElse(ONE);
     }
-    /*~
-       1   ABCD        1234
-       2   ABDC        1243
-       3   ACBD        1324
-       4   ACDB        1342
-       5   ADBC        1423
-       6   ADCB        1432
-       7   BACD        2134
-       8   BADC        2143
-       9   BCAD        2314
-      10   BCDA        2341
-      11   BDAC        2413
-      12   BDCA        2431
-      13   CABD        3124
-      14   CBAD        3214
-      15   CBDA        3241
-      16   CDAB        3412
-      17   CDBA        3421
-      18   DABC        4123
-      19   DBAC        4213
-      20   DBCA        4231
-      21   DCBA        4321
-     */
-            // count of letters before multiplied by count of chars these
-            // e.g. for CBAD
-            // AB are before C giving 2 letters
-            // A has 6 combinations from the different ways to shuffle BCD
-            // B has 6 combinations from the different combinations of ACD
-            // calc combos...
-            // A can only be 1 combo
-            // AB can be AB or BA i.e. 2 combos
-            // ABC can be ABC, ACB, BAC, BCA, CBA, CAB i.e. 6 combos
-            /*
-                How many different ways can the letters P, Q, R, S be arranged?
-                The answer is 4! = 24.
-                This is because there are four spaces to be filled: _, _, _, _
-
-                If there are duplicate letters these must be accounted for by divinding by the count factorial
-
-                In how many ways can the letters in the word: STATISTICS be arranged?
-                There are 3 S’s, 2 I’s and 3 T’s in this word, therefore, the number of ways of arranging the letters are:
-                10!      = 50 400
-                --------
-                3! 2! 3!
-             */
 }

@@ -14,6 +14,8 @@ public class AnagramTest {
             "CABD,13",
             "ABAB,2",
             "AAAB,1",
+            "BAAA,4",
+            "BAAB,4",
             "BCAD,9",
             "QUESTION,24572",
             "BOOKKEEPER,10743"
