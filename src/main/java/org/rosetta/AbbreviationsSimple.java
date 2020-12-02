@@ -1,5 +1,8 @@
 package org.rosetta;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 public class AbbreviationsSimple {
 
     /**
@@ -32,6 +35,28 @@ public class AbbreviationsSimple {
                                                 "   refresh renum 3 repeat 3 replace 1 Creplace 2 reset 3 restore 4 rgtLEFT right 2 left\n" +
                                                 "   2  save  set  shift 2  si  sort  sos  stack 3 status 4 top  transfer 3  type 1  up 1";
 
+    public static final Map<String, Integer> commandTableSearchable;
+    public static final String ERROR = "*error*";
+
+    static {
+        List<String> collectionOfCommandTableDetails = Arrays.stream(commandTable.replace('\n', ' ')
+                .split("\\s+")).filter(s -> s.length() > 0).collect(Collectors.toList());
+
+        commandTableSearchable = new HashMap<>();
+        int size = collectionOfCommandTableDetails.size();
+        for (int i = 0; i < size; i++) {
+            String s = collectionOfCommandTableDetails.get(i);
+            if (i+1 < size) {
+                String next = collectionOfCommandTableDetails.get(i + 1);
+                if(!Character.isAlphabetic(next.charAt(0))) {
+                    commandTableSearchable.put(s, Integer.parseInt(next));
+                    i++;
+                    continue;
+                }
+            }
+            commandTableSearchable.put(s, s.length());
+        }
+    }
     /**
      *   The command table needn't be verified/validated.
      *   Write a function to validate if the user "words"   (given as input)   are valid   (in the command table).
@@ -41,6 +66,23 @@ public class AbbreviationsSimple {
      *   Show all output here.
      */
     public String evaluate(String userInput) {
-        return "";
+        String[] tokens = userInput.split("\\s+");
+        String[] result = new String[tokens.length];
+        for (int i = 0; i < tokens.length; i++) {
+            Optional<String> x = lookupCommand(tokens[i]);
+            result[i] = x.orElse(ERROR);
+        }
+        return String.join(" ", result);
+    }
+
+    private Optional<String> lookupCommand(String token) {
+        final int tokenLength = token.length();
+        return commandTableSearchable.entrySet().stream()
+                .filter(e -> tokenLength >= e.getValue())
+                .filter(e -> tokenLength <= e.getKey().length())
+                .filter(e -> e.getKey().substring(0, tokenLength).equalsIgnoreCase(token))
+                .map(Map.Entry::getKey)
+                .map(String::toUpperCase)
+                .findFirst();
     }
 }
