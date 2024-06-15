@@ -1,2 +1,3 @@
-codewars-test==0.2.1
+# install with `pip install git+https://github.com/codewars/python-test-framework.git#egg=codewars_test`
+codewars-test==0.2.1 
 pip-chill==1.0.3
