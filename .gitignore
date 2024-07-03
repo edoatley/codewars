@@ -1,3 +1,5 @@
-/.idea/
-/build/
-/.gradle/
+.idea/
+java/build/
+java/.gradle/
+java/bin/
+python/.venv
