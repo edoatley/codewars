@@ -25,3 +25,15 @@ def fib(x):
     fib_value = fib(x - 1) + fib(x - 2)
     fib_cache[x] = fib_value
     return fib_value
+
+# Some nice other solutions:
+
+def all_fibonacci_numbers():
+    a, b = 0, 1
+    while 1:
+        yield b
+        a, b = b, a + b
+        
+def all_fibonacci_numbers(a: int = 0, b: int = 1):
+    yield b
+    yield from all_fibonacci_numbers(b, a + b)
