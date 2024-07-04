@@ -1,5 +1,6 @@
 import codewars_test as test
 import itertools
+from solution import all_fibonacci_numbers
 
 @test.it('test first thirty')
 def _():

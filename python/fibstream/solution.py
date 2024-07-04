@@ -7,7 +7,21 @@
 # 1, 1, 2, 3, 5, 8, 13, ..., 89, 144, 233, 377, ...
 
 def all_fibonacci_numbers():
-    pass
+    n = 1
+    while True:  # Infinite loop
+        yield fib(n)  # Yield the current number and pause
+        n += 1    # Increment n
 
-def fib(x, y):
-    yield x + y
+# Add memoization to the fibonacci function
+fib_cache = {}
+
+def fib(x):
+    if x in fib_cache:
+        return fib_cache[x]
+    
+    if x <= 2:
+        return 1 
+    
+    fib_value = fib(x - 1) + fib(x - 2)
+    fib_cache[x] = fib_value
+    return fib_value
