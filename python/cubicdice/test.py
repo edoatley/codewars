@@ -1,3 +1,6 @@
+import codewars_test as test
+from solution import rolldice_sum_prob
+
 test.describe("Example Tests")
 def assertFuzzyEquals(actual, expected, msg=""):
     import math
