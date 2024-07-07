@@ -9,4 +9,4 @@
 # Input: 123456789 Output: 987654321
 
 def descending_order(num):
-    # Bust a move right here
+    return int(''.join(sorted(str(num), reverse=True)))

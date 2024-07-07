@@ -1,4 +1,5 @@
 import codewars_test as test
+from solution import descending_order
 
 try:
     from solution import Descending_Order as descending_order
