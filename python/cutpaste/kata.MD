@@ -52,7 +52,7 @@ Here is some piece of text that was accidentally double pasted.
 
 | Input	          | Output	      | |
 | --- | --- | --- |
-A_X_A_X_O_X_O_X_  |	A_X_O_X_	  |  Correct (finds the first repeat) |
+A_X_A_X_O_X_O_X_  |	A_X_O_X_	    | Correct (finds the first repeat) |
 A_X_A_X_O_X_O_X_  |	A_X_A_X_O_X_X |	Wrong |
-A_A_B_A_A_B_	  | A_B_A_B_	  | Correct (finds the first repeat, not the bigger one) |
-A_A_B_A_A_B_	  | A_A_B_	      | Wrong |
+A_A_B_A_A_B_	    | A_B_A_B_	    | Correct (finds the first repeat, not the bigger one) |
+A_A_B_A_A_B_	    | A_A_B_	      | Wrong |
