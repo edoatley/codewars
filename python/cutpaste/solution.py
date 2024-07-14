@@ -46,18 +46,22 @@ class CutPaste:
         # for token in tokens
         for i, t in enumerate(self.tokens):
             # scan ahead for a match to the token
-            dupe_indices = [index for index, token in enumerate(self.tokens[i+1:]) if t == token]
+            logging.debug(f'Checking for dupes with {i=}, {t=}')
+            dupe_indices = [index for index, token in enumerate(self.tokens) if t == token and index > i ]
+            logging.debug(f'dupes {dupe_indices=}')
             
             # if none found or non-alpha token skip
             if t.isalnum() and len(dupe_indices) > 0:   
                 # if found see if there is a match with the next token at each end until you find the duplicate token or they do not match
                 for x in dupe_indices:
+                    logging.debug(f'Checking dupe index {x=} ({i=})')
                     if self.could_be_duplicate_tokens(i, x):
                         errors.append((i, x))
 
         return errors
 
     def could_be_duplicate_tokens(self, i, j):
+        logging.debug(f'could_be_duplicate_tokens({self.tokens[i]}, {self.tokens[j]})')
         if i >= j:
             return False
         
@@ -65,6 +69,8 @@ class CutPaste:
         while (i + steps) < len(self.tokens) and (i + steps) < j:
             if self.tokens[(i + steps)] != self.tokens[(j + steps)]:
                 return False
+            
+            steps += 1
         
         return True
 
