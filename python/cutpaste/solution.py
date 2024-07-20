@@ -1,6 +1,5 @@
 from typing import List
 import logging, sys
-from autologging import logged, traced, TRACE
 
 # words are groups of alphabetic chars
 # Non-alphabetic chars are considered to be punctuation and spaces (there is no distinction)
@@ -14,12 +13,10 @@ from autologging import logged, traced, TRACE
 # You want to remove the longest repetitions of the shortest sequences (e.g.  double in the example, not  double double))
 # Pasting occurs strictly left-to-right only appending to your current text
 
-@logged
-@traced
 class CutPaste:
         
     def __init__(self, text : str):
-        self.__log.info("initialized")
+        # self.__log.info("initialized")
         self.tokens = self.tokenize(text)
         self.errors = []
     
@@ -57,7 +54,7 @@ class CutPaste:
                     logging.debug(f'Checking dupe index {x=} ({i=})')
                     if self.could_be_duplicate_tokens(i, x):
                         errors.append((i, x))
-
+        self.errors = errors
         return errors
 
     def could_be_duplicate_tokens(self, i, j):
@@ -74,16 +71,42 @@ class CutPaste:
         
         return True
 
+    def process_errrors(self):
+        delete_indexes = []
+        for a, b in self.errors:
+            i = 0
+            while True:
+                if self.tokens[a+i] == self.tokens[b+i] and (b+i) < len(self.tokens):
+                    i += 1
+                else:
+                    break
+            left = self.tokens[a:a+i]
+            right = self.tokens[b:b+i]
+            logging.info(f'L: {left} / R {right}')
+            if left == right:
+                for x in range(b, b+i):
+                    delete_indexes.append(x)
+        
+        
+        logging.info(delete_indexes)
+        for idx, ele in enumerate(self.tokens):
+            in_del = idx in delete_indexes
+            logging.info(f'{idx=}, {ele=}, {in_del=}')
+           
+        self.tokens = [ele for idx, ele in enumerate(self.tokens) if idx not in delete_indexes]
+            
+
     def fix_cut_paste(self):
-        self.errors = self.find_duplicate_tokens()
+        self.find_duplicate_tokens()
+        self.process_errrors()
         logging.info(f'Found errors: {self.errors}')
         # logic to remove errors
         return ''.join(self.tokens)
     
         
 if __name__ == "__main__":
-    logging.basicConfig(
-        level=TRACE, stream=sys.stderr,
+    logging.basicConfig(stream=sys.stderr,level="INFO",
         format="%(levelname)s:%(filename)s,%(lineno)d:%(name)s.%(funcName)s:%(message)s")
     cut_paste = CutPaste("Here is some piece of text piece of text that was was accidentally double double pasted.")
-    cut_paste.fix_cut_paste()
+    result = cut_paste.fix_cut_paste()
+    logging.info(f"Result : {result}")
